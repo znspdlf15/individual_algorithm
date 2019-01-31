@@ -60,32 +60,23 @@ void set_wall(int map[8][8], int count, int x, int y){
 
         for (int n = 0; n < N; n++ ){
             for (int m = 0; m < M; m++ ){
-                copy_map[m][n] = map[m][n];
+                copy_map[n][m] = map[n][m];
             }
         }
         
         spread_virus(copy_map, virus);
         int tmp = get_safe_area(copy_map, M, N);
-        if ( ans < tmp ){
-            for (int n = 0; n < N; n++ ){
-                for (int m = 0; m < M; m++ ){
-                    cout << copy_map[n][m];
-                }
-                cout << endl;
-            }
-            cout << endl;
-        }
         ans = max(ans, tmp);
 
         return;
     }
     
-    for (int n = 0; n < N; n++ ){
-        for (int m = 0; m < M; m++ ){
-            if ( map[n][m] == 0 ){
-                map[n][m] = 1;
+    for (int i = 0; i < N; i++ ){
+        for (int j = 0; j < M; j++ ){
+            if ( map[i][j] == 0 ){
+                map[i][j] = 1;
                 set_wall(map, count-1, 0, 0);
-                map[n][m] = 0;
+                map[i][j] = 0;
             }
         }
     }
@@ -93,8 +84,6 @@ void set_wall(int map[8][8], int count, int x, int y){
 
 int main(){
     int map[8][8] = {0, };
-    
-    int virus_num = 0;
 
     cin >> N >> M;
     int n, m;
@@ -103,7 +92,6 @@ int main(){
             cin >> map[n][m];
             if ( map[n][m] == 2 ){
                 virus.push_back(make_pair(m, n));
-                virus_num++;
             }
         }
     }
