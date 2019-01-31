@@ -1,35 +1,38 @@
 #include <iostream>
 #include <vector>
 #include <queue>
+#include <algorithm>
 using namespace std;
 
-int N, M; // width, height
+int N, M; // height, width
 int dx[4] = {0, 0, -1, 1};
 int dy[4] = {1, -1, 0, 0};
+vector<pair<int, int>> virus;
 
-void print_safe_area(int map[8][8], int width, int height){
+int ans = 0;
+
+int get_safe_area(int map[8][8], int width, int height){
     int count = 0;
     int n, m;
 
     for ( n = 0; n < height; n++ ){
         for ( m = 0; m < width; m++){
-            // cout << map[n][m] << " ";
             if ( map[n][m] == 0 ){
                 count++;
             }
         }
-        // cout << endl;
     }
 
-    cout << count << endl;
+    return count;
 }
+
 void spread_virus(int map[8][8], vector<pair<int, int>> v_virus){
     queue<pair<int, int>> q;
 
     vector<pair<int, int>>::iterator iter;
 
-    for ( iter = v_virus.begin(); iter != v_virus.end(); iter++ ){
-        q.push(*iter);
+    for(int a = 0; a < v_virus.size(); a++) {
+        q.push(v_virus[a]);
     }
 
     while ( !q.empty() ){
@@ -44,16 +47,52 @@ void spread_virus(int map[8][8], vector<pair<int, int>> v_virus){
             if ( nextX < 0 || nextX >= M ) continue;
             if ( nextY < 0 || nextY >= N ) continue;
 
-            if ( map[nextX][nextY] == 0 ) {
-                map[nextX][nextY] = 2;
+            if ( map[nextY][nextX] == 0 ) {
+                map[nextY][nextX] = 2;
                 q.push(make_pair(nextX, nextY));
             }
         }
     }
 }
+void set_wall(int map[8][8], int count, int x, int y){
+    if ( count <= 0 ) {
+        int copy_map[8][8] = {0, };
+
+        for (int n = 0; n < N; n++ ){
+            for (int m = 0; m < M; m++ ){
+                copy_map[m][n] = map[m][n];
+            }
+        }
+        
+        spread_virus(copy_map, virus);
+        int tmp = get_safe_area(copy_map, M, N);
+        if ( ans < tmp ){
+            for (int n = 0; n < N; n++ ){
+                for (int m = 0; m < M; m++ ){
+                    cout << copy_map[n][m];
+                }
+                cout << endl;
+            }
+            cout << endl;
+        }
+        ans = max(ans, tmp);
+
+        return;
+    }
+    
+    for (int n = 0; n < N; n++ ){
+        for (int m = 0; m < M; m++ ){
+            if ( map[n][m] == 0 ){
+                map[n][m] = 1;
+                set_wall(map, count-1, 0, 0);
+                map[n][m] = 0;
+            }
+        }
+    }
+}
+
 int main(){
     int map[8][8] = {0, };
-    vector<pair<int, int>> virus;
     
     int virus_num = 0;
 
@@ -68,9 +107,10 @@ int main(){
             }
         }
     }
-    spread_virus(map, virus);
 
-    print_safe_area(map, M, N);
+    set_wall(map, 3, 0, 0);
 
+    cout << ans << endl;
     return 0;
+
 }
