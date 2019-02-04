@@ -48,8 +48,8 @@ int main(){
         
         x--;
         y--;
-        CTree tree = CTree(x , y, age);
-        trees[y][x].push_back(tree);
+        CTree tree = CTree(y, x, age);
+        trees[x][y].push_back(tree);
     }
 
     for ( int year = 0; year < K; year++ ){
@@ -62,13 +62,11 @@ int main(){
                     if ( map[i][j] >= trees[i][j][k].age ){
                         map[i][j] -= trees[i][j][k].age;
                         trees[i][j][k].age++;
-                        cout << j << ", " << i << " is alive." << "(" << trees[i][j].size() << ")" << map[i][j] << endl;
                     } else {
                         while ( k >= 0 ){
                             dead.push_back(trees[i][j][k]);
                             trees[i][j].erase(trees[i][j].begin() + k);
                             k--;
-                            cout << j << ", " << i << " is dead." << "(" << trees[i][j].size() << ")" << map[i][j] << endl; 
                         }
                     }
                 }
@@ -104,8 +102,6 @@ int main(){
                             CTree tree = CTree(targetX, targetY, 1);
 
                             trees[targetY][targetX].push_back(tree);
-
-                            cout << targetX << ", " << targetY << " is born." << "(" << trees[targetY][targetX].size() << ")" << map[targetY][targetX] << endl;
                         }
                     }
                 }
@@ -117,8 +113,6 @@ int main(){
                 map[i][j] += A[i][j];
             }
         }
-
-        cout << "next year." << endl;
     }
 
     int ans = 0;
