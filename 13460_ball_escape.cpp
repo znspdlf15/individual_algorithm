@@ -46,32 +46,32 @@ void dfs(int count){
                 t_blueY = t_blueY + dy[d];
             }
 
-            if ( t_redX >= 0 && t_redX < M && t_redY >= 0 && t_redY < N ){
-                char c = copy_map[t_redY][t_redX];
-                if ( c == '#' ) {
-                    red_blocked = true;
-                    t_redX -= dx[d];
-                    t_redY -= dy[d];
-                } else if ( c == 'B' ){
-                    t_redX = t_blueX - dx[d];
-                    t_redY = t_blueY - dy[d];
-                } else if ( c == 'O' ){
-                    tmp_ans = min(ans, count);
-                }
-            }
-           
             if ( t_blueX >= 0 && t_blueX < M && t_blueY >= 0 && t_blueY < N ){
                 char c = copy_map[t_blueY][t_blueX];
                 if ( c == '#' ) {
                     blue_blocked = true;
                     t_blueX -= dx[d];
                     t_blueY -= dy[d];
-                } else if ( c == 'R' ){
-                    t_blueX = t_redX - dx[d];
-                    t_blueY = t_redY - dy[d];
+                } else if ( t_blueX == t_redX && t_blueY == t_redY ){
+                    t_blueX = t_blueX - dx[d];
+                    t_blueY = t_blueY - dy[d];
                 } else if ( c == 'O' ){
                     failed = true;
                     break;
+                }
+            }
+
+            if ( t_redX >= 0 && t_redX < M && t_redY >= 0 && t_redY < N ){
+                char c = copy_map[t_redY][t_redX];
+                if ( c == '#' ) {
+                    red_blocked = true;
+                    t_redX -= dx[d];
+                    t_redY -= dy[d];
+                } else if ( t_blueX == t_redX && t_blueY == t_redY ){
+                    t_redX = t_redX - dx[d];
+                    t_redY = t_redY - dy[d];
+                } else if ( c == 'O' ){
+                    tmp_ans = min(ans, count);
                 }
             }
         }
@@ -97,6 +97,7 @@ void dfs(int count){
         //     cout << endl;
         // }
         // cout << red[0] << ", " << red[1] << endl;
+        // cout << blue[0] << ", " << blue[1] << endl;
         // cout << endl;
         dfs(count+1);
         move_ball(t_redX, t_redY, redX, redY);
