@@ -31,25 +31,18 @@ void dfs(int count){
         int t_blueX = blueX;
         int t_blueY = blueY;
 
-        bool red_blocked = false;
-        bool blue_blocked = false;
         bool failed = false;
 
         int tmp_ans = 1000;
         for ( int i = 0; i < N || i < M; i++ ){
-            if ( red_blocked == false ){
-                t_redX = t_redX + dx[d];
-                t_redY = t_redY + dy[d];
-            }
-            if ( blue_blocked == false ){
-                t_blueX = t_blueX + dx[d];
-                t_blueY = t_blueY + dy[d];
-            }
+            t_redX = t_redX + dx[d];
+            t_redY = t_redY + dy[d];
+            t_blueX = t_blueX + dx[d];
+            t_blueY = t_blueY + dy[d];
 
             if ( t_blueX >= 0 && t_blueX < M && t_blueY >= 0 && t_blueY < N ){
                 char c = copy_map[t_blueY][t_blueX];
                 if ( c == '#' ) {
-                    blue_blocked = true;
                     t_blueX -= dx[d];
                     t_blueY -= dy[d];
                 } else if ( t_blueX == t_redX && t_blueY == t_redY ){
@@ -64,7 +57,6 @@ void dfs(int count){
             if ( t_redX >= 0 && t_redX < M && t_redY >= 0 && t_redY < N ){
                 char c = copy_map[t_redY][t_redX];
                 if ( c == '#' ) {
-                    red_blocked = true;
                     t_redX -= dx[d];
                     t_redY -= dy[d];
                 } else if ( t_blueX == t_redX && t_blueY == t_redY ){
@@ -123,7 +115,7 @@ int main(){
                 org_map[n][m] = '.';
                 blue[0] = m;
                 blue[1] = n;
-            } if ( copy_map[n][m] == 'R' ){
+            } else if ( copy_map[n][m] == 'R' ){
                 org_map[n][m] = '.';
                 red[0] = m;
                 red[1] = n;
