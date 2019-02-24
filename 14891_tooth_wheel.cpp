@@ -4,40 +4,27 @@
 using namespace std;
 char wheel[4][9];  // [0] = 12시, [2] = 3시, [6] = 9시
                   // 1 : S, 0 : N
-char copy_wheel[4][8];
-int visit[4];
+int arrRotate[4];
 
 void rotate(int input, int dir){
-  visit[input] = 1;
-  // cout << input << "is " << dir << "rotated." << endl;
   if ( dir == -1 ){
-    int temp = copy_wheel[input][0];
+    int temp = wheel[input][0];
 
     for ( int i = 0; i < 7; i++ ){
-      copy_wheel[input][i] = copy_wheel[input][i+1];
+      wheel[input][i] = wheel[input][i+1];
     }
-    copy_wheel[input][7] = temp;
+    wheel[input][7] = temp;
 
   } else if ( dir == 1 ){
-    int temp = copy_wheel[input][7];
+    int temp = wheel[input][7];
 
     for ( int i = 7; i > 0; i-- ){
-      copy_wheel[input][i] = copy_wheel[input][i-1];
+      wheel[input][i] = wheel[input][i-1];
     }
-    copy_wheel[input][0] = temp;
-  }
-
-  if ( input > 0 && !visit[input-1] ){
-    if ( wheel[input-1][2] != wheel[input][6] ){
-      rotate(input-1, -dir);
-    }
-  }
-  if ( input < 3 && !visit[input+1] ){
-    if ( wheel[input+1][6] != wheel[input][2] ){
-      rotate(input+1, -dir);
-    }
+    wheel[input][0] = temp;
   }
 }
+
 int main(){
   for ( int y = 0; y < 4; y++ ) {
     scanf("%s", wheel[y]);
@@ -47,21 +34,28 @@ int main(){
 
   cin >> K;
   for ( int k = 0; k < K; k++ ){
-    int command;
-    int dir;
+    int command, dir;
     cin >> command >> dir;
+    command--;
 
-    memset(visit, 0, sizeof(visit));
-    for ( int y = 0; y < 4; y++ ){
-      for ( int x = 0; x < 8; x++ ){
-        copy_wheel[y][x] = wheel[y][x];
+    memset(arrRotate, 0, sizeof(arrRotate));
+    arrRotate[command] = dir;
+    for ( int k = command - 1; k >= 0; k-- ){
+      if ( wheel[k+1][6] != wheel[k][2] ){
+        arrRotate[k] = -arrRotate[k+1];
+      } else {
+        break;
       }
     }
-    rotate(command-1, dir);
-    for ( int y = 0; y < 4; y++ ){
-      for ( int x = 0; x < 8; x++ ){
-        wheel[y][x] = copy_wheel[y][x];
+    for ( int k = command + 1; k <= 3; k++ ){
+      if ( wheel[k-1][2] != wheel[k][6] ){
+        arrRotate[k] = -arrRotate[k-1];
+      } else {
+        break;
       }
+    }
+    for( int k = 0; k < 4; k++ ){
+      rotate(k, arrRotate[k]);
     }
   }
 
