@@ -1,15 +1,30 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
+#include <bits/stdc++.h>
+
+#define U (1<<0)
+#define R (1<<1)
+#define D (1<<2)
+#define L (1<<3)
+
 using namespace std;
 typedef struct TCamera{
   int x, y;
   char type;
 }Camera;
 
-char map[8][8];
+char org_map[8][8];
 int N, M; // height, width
 vector<Camera> cameras;
+
+vector<int> moving[5] = {
+    {U, R, D, L},
+    {U|D, R|L},
+    {U|R, U|L, D|R, D|L},
+    {U|R|L, D|R|L, R|U|D, L|U|D},
+    {U|R|D|L}
+};
 
 int ans = 10000000;
 
@@ -34,8 +49,8 @@ void copy_arr(char dest[8][8], char src[8][8]){
 }
 
 void monitor(char target[8][8], int x, int y, int dir){
-  int dx[4] = { 1, -1, 0, 0 };
-  int dy[4] = { 0, 0, 1, -1 };
+  int dx[4] = { 0, 1, 0, -1 };
+  int dy[4] = { -1, 0, 1, 0 };
 
   int nextX = x + dx[dir];
   int nextY = y + dy[dir];
@@ -55,72 +70,17 @@ void dfs(int count, char target[8][8]){
   char temp_map[8][8];
   Camera cam = cameras[count-1];
 
-  if ( cam.type == '1' ){
+  int type = (int)(cam.type - '0');
+
+  for ( int i = 0; i < moving[type-1].size(); i++ ){
     copy_arr(temp_map, target);
-    monitor(temp_map, cam.x, cam.y, 0);
-    dfs(count-1, temp_map);
-    copy_arr(temp_map, target);
-    monitor(temp_map, cam.x, cam.y, 1);
-    dfs(count-1, temp_map);
-    copy_arr(temp_map, target);
-    monitor(temp_map, cam.x, cam.y, 2);
-    dfs(count-1, temp_map);
-    copy_arr(temp_map, target);
-    monitor(temp_map, cam.x, cam.y, 3);
-    dfs(count-1, temp_map);
-  } else if ( cam.type == '2' ){
-    copy_arr(temp_map, target);
-    monitor(temp_map, cam.x, cam.y, 0);
-    monitor(temp_map, cam.x, cam.y, 1);
-    dfs(count-1, temp_map);
-    copy_arr(temp_map, target);
-    monitor(temp_map, cam.x, cam.y, 2);
-    monitor(temp_map, cam.x, cam.y, 3);
-    dfs(count-1, temp_map);
-  } else if ( cam.type == '3' ){
-    copy_arr(temp_map, target);
-    monitor(temp_map, cam.x, cam.y, 0);
-    monitor(temp_map, cam.x, cam.y, 2);
-    dfs(count-1, temp_map);
-    copy_arr(temp_map, target);
-    monitor(temp_map, cam.x, cam.y, 0);
-    monitor(temp_map, cam.x, cam.y, 3);
-    dfs(count-1, temp_map);
-    copy_arr(temp_map, target);
-    monitor(temp_map, cam.x, cam.y, 1);
-    monitor(temp_map, cam.x, cam.y, 2);
-    dfs(count-1, temp_map);
-    copy_arr(temp_map, target);
-    monitor(temp_map, cam.x, cam.y, 1);
-    monitor(temp_map, cam.x, cam.y, 3);
-    dfs(count-1, temp_map);
-  } else if ( cam.type == '4' ){
-    copy_arr(temp_map, target);
-    monitor(temp_map, cam.x, cam.y, 1);
-    monitor(temp_map, cam.x, cam.y, 2);
-    monitor(temp_map, cam.x, cam.y, 3);
-    dfs(count-1, temp_map);
-    copy_arr(temp_map, target);
-    monitor(temp_map, cam.x, cam.y, 0);
-    monitor(temp_map, cam.x, cam.y, 2);
-    monitor(temp_map, cam.x, cam.y, 3);
-    dfs(count-1, temp_map);
-    copy_arr(temp_map, target);
-    monitor(temp_map, cam.x, cam.y, 0);
-    monitor(temp_map, cam.x, cam.y, 1);
-    monitor(temp_map, cam.x, cam.y, 3);
-    dfs(count-1, temp_map);
-    copy_arr(temp_map, target);
-    monitor(temp_map, cam.x, cam.y, 0);
-    monitor(temp_map, cam.x, cam.y, 1);
-    monitor(temp_map, cam.x, cam.y, 2);
-    dfs(count-1, temp_map);
-  } else if ( cam.type == '5' ){
-    copy_arr(temp_map, target);
-    monitor(temp_map, cam.x, cam.y, 0);
-    monitor(temp_map, cam.x, cam.y, 1);
-    monitor(temp_map, cam.x, cam.y, 2);
-    monitor(temp_map, cam.x, cam.y, 3);
+    for ( int b = 0; b < 4; b++ ){
+      int move = 1 << b;
+      move = moving[type-1][i] & move;
+      if ( move != 0 ){
+        monitor(temp_map, cam.x, cam.y, b);
+      }
+    }
     dfs(count-1, temp_map);
   }
 }
@@ -135,11 +95,11 @@ int main(){
       if ( input != '0' && input != '6' ){
         cameras.push_back({.x = x, .y = y, .type = input});
       }
-      map[y][x] = input;
+      org_map[y][x] = input;
     }
   }
 
-  dfs(cameras.size(), map);
+  dfs(cameras.size(), org_map);
 
   cout << ans << endl;
 
