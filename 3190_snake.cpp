@@ -35,7 +35,6 @@ int main(){
   int dir = 0;
   int cmd_idx = 0;
   int ans = 0;
-  bool find = false;
   while ( true ){
     ans++;
     int headX = snake.back().first + dx[dir];
