@@ -16,7 +16,7 @@ class CFish{
             size = _size;
         }
         ~CFish(){
-            
+
         }
 };
 
@@ -36,7 +36,7 @@ class CShark: public CFish{
 
 int main(){
     int N;
-    
+
     vector<CFish*> v_fishs;
     CShark *baby_shark;
 
@@ -64,9 +64,9 @@ int main(){
         int closest_distance = 100;
         int closest_index = 0;
 
-        queue<pair<int, int>> q;
+        queue<pair<int, int> > q;
         q.push(make_pair(baby_shark->x, baby_shark->y));
-        
+
         int moved[20][20] = {0, };
         int move_num = 0;
         bool is_find = false;

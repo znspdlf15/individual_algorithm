@@ -7,7 +7,7 @@ using namespace std;
 int N, M; // height, width
 int dx[4] = {0, 0, -1, 1};
 int dy[4] = {1, -1, 0, 0};
-vector<pair<int, int>> virus;
+vector<pair<int, int> > virus;
 
 int ans = 0;
 
@@ -26,10 +26,9 @@ int get_safe_area(int map[8][8], int width, int height){
     return count;
 }
 
-void spread_virus(int map[8][8], vector<pair<int, int>> v_virus){
-    queue<pair<int, int>> q;
-
-    vector<pair<int, int>>::iterator iter;
+void spread_virus(int map[8][8], vector<pair<int, int> > v_virus){
+    queue<pair<int, int> > q;
+    vector<pair<int, int> >::iterator iter;
 
     for(int a = 0; a < v_virus.size(); a++) {
         q.push(v_virus[a]);
@@ -63,14 +62,14 @@ void set_wall(int map[8][8], int count, int x, int y){
                 copy_map[n][m] = map[n][m];
             }
         }
-        
+
         spread_virus(copy_map, virus);
         int tmp = get_safe_area(copy_map, M, N);
         ans = max(ans, tmp);
 
         return;
     }
-    
+
     for (int i = 0; i < N; i++ ){
         for (int j = 0; j < M; j++ ){
             if ( map[i][j] == 0 ){
