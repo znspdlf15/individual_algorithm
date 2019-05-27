@@ -4,45 +4,52 @@
 #include <algorithm>
 using namespace std;
 
+typedef struct animal{
+  int x, y;
+}Animal;
+
+bool compare(Animal a, Animal b){
+  return a.x < b.x;
+}
+
 int main(){
   int M, N, L;  // 사대수, 동물수, 사정거리
 
   int position[100000];
+  Animal animals[100000];
 
   cin >> M >> N >> L;
   for ( int m = 0; m < M; m++ ){
     scanf("%d", &position[m]);
   }
-
-  sort(position, position+M);
-
-  int answer = 0;
   for ( int n = 0; n < N; n++ ){
     int x, y;
     scanf("%d%d", &x, &y);
+    animals[n].x = x;
+    animals[n].y = y;
+  }
 
-    int start_idx = 0;
-    int end_idx = M-1;
-    int target_idx;
-    while ( true ){
-      int center_idx = (start_idx + end_idx) / 2;
-      if ( position[center_idx] >= x ){
-        end_idx = center_idx;
-      } else {
-        start_idx = center_idx;
-      }
-      if ( end_idx - start_idx == 1 ){
-        if ( position[end_idx] - x > x - position[start_idx]){
-          target_idx = start_idx;
-        } else {
-          target_idx = end_idx;
-        }
-        break;
-      }
+  sort(position, position+M);
+  sort(animals, animals+N, compare);
+
+  int answer = 0;
+  int target_idx = 0;
+  for ( int n = 0; n < N; n++ ){
+    while ( position[target_idx] <= animals[n].x ){
+      if ( target_idx >= M - 1 ) break;
+      target_idx++;
     }
 
-    if ( abs(position[target_idx] - x) + y <= L ){
-      answer++;
+    int x = animals[n].x;
+    int y = animals[n].y;
+    if ( target_idx > 0 ){
+      if ( abs(position[target_idx] - x) + y <= L || abs(position[target_idx-1] - x) + y <= L){
+        answer++;
+      }
+    } else {
+      if ( abs(position[target_idx] - x) + y <= L ){
+        answer++;
+      }
     }
   }
 
