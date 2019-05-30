@@ -1,12 +1,26 @@
 #include <iostream>
+#include <memory.h>
 #include <stdio.h>
 using namespace std;
 
-int main(){
-  int minimum[1501];
-  static int city[1502][1502];
-  int N;
+int N;
+int visit[1502][1502];
+int city[1502][1502];
 
+int getMin(int left, int right, int num){
+  if ( num == N+1 ){
+    return 0;
+  }
+
+  int new_left = getMin(num, right, num+1) + ;
+  int new_right = getMin(left, num, num+1);
+
+  if ( new_left > new_right ){
+
+  }
+
+}
+int main(){
   scanf("%d", &N);
 
   for ( int y = 1; y <= N; y++ ){
@@ -15,20 +29,8 @@ int main(){
     }
   }
 
-  int left = 1;
-  int right = 1;
-  minimum[1] = 0;
+  memset(visit, -1, sizeof(visit));
 
-  for ( int next = 2; next <= N; next++ ){
-    if ( city[next][left] > city[right][next] ){
-      minimum[next] = minimum[next-1] + city[right][next];
-      right = next;
-    } else {
-      minimum[next] = minimum[next-1] + city[next][left];
-      left = next;
-    }
-  }
-
-  cout << minimum[N] << endl;
+  cout << getMin(1, 1, 1) << endl;
   return 0;
 }
